@@ -466,6 +466,7 @@ function renderHomePage() {
                 <div class="post-card gallery-card" onclick="openAlbumDetail(${item.id})">
                     ${currentUser && item.author === currentUser ? `
                         <div class="post-card-actions">
+                            <button class="action-btn" onclick="event.stopPropagation(); editAlbum(${item.id})">✏️ 编辑</button>
                             <button class="action-btn" onclick="event.stopPropagation(); deleteAlbum(${item.id})">🗑️ 删除</button>
                         </div>
                     ` : ''}
@@ -924,6 +925,7 @@ function renderGallery() {
                 <div class="gallery-item" onclick="openAlbumDetail(${album.id})">
                     ${currentUser && album.author === currentUser ? `
                         <div class="gallery-item-actions">
+                            <button class="action-btn" onclick="event.stopPropagation(); editAlbum(${album.id})">✏️ 编辑</button>
                             <button class="action-btn" onclick="event.stopPropagation(); deleteAlbum(${album.id})">🗑️ 删除</button>
                         </div>
                     ` : ''}
@@ -1144,6 +1146,41 @@ async function deletePost(type, id) {
     } catch (error) {
         console.error('删除失败:', error);
         alert('删除失败: ' + error.message);
+    }
+}
+
+// 编辑相册
+async function editAlbum(id) {
+    try {
+        const response = await fetch(`${API_URL}/albums`);
+        const albums = await response.json();
+        const album = albums.find(a => a.id === id);
+        
+        if (!album) return;
+        
+        const newDescription = prompt('修改相册描述：', album.description || '');
+        
+        if (newDescription === null) return; // 用户取消
+        
+        const updateResponse = await fetch(`${API_URL}/albums/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ description: newDescription })
+        });
+        
+        if (updateResponse.ok) {
+            showToast('✅ 修改成功！');
+            if (currentPage === 'home') {
+                await loadHomePage();
+            } else {
+                await loadGallery();
+            }
+        } else {
+            throw new Error('修改失败');
+        }
+    } catch (error) {
+        console.error('修改失败:', error);
+        alert('修改失败: ' + error.message);
     }
 }
 

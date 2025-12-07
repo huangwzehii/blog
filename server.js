@@ -284,6 +284,24 @@ app.post('/api/albums', upload.array('photos', 20), (req, res) => {
     );
 });
 
+// 更新相册描述
+app.put('/api/albums/:id', (req, res) => {
+    const { id } = req.params;
+    const { description } = req.body;
+    
+    db.run(
+        `UPDATE albums SET description = ? WHERE id = ?`,
+        [description || '', id],
+        function(err) {
+            if (err) {
+                res.status(500).json({ error: err.message });
+                return;
+            }
+            res.json({ success: true });
+        }
+    );
+});
+
 // 删除相册
 app.delete('/api/albums/:id', (req, res) => {
     const { id } = req.params;
