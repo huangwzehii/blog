@@ -4,6 +4,11 @@ const API_URL = window.location.hostname === 'localhost'
     ? 'http://localhost:3000/api' 
     : `${window.location.protocol}//${window.location.host}/api`;
 
+// 上传文件路径配置
+const UPLOADS_URL = window.location.hostname === 'localhost'
+    ? 'http://localhost:3000/uploads'
+    : `${window.location.protocol}//${window.location.host}/uploads`;
+
 // 密码配置
 const PASSWORDS = {
     male: 'sr',
@@ -471,7 +476,7 @@ function renderHomePage() {
                     <div class="home-gallery-preview">
                         ${item.photos.slice(0, 4).map(photo => `
                             <div class="home-gallery-photo">
-                                <img src="http://localhost:3000/uploads/${photo.filename}" alt="">
+                                <img src="${UPLOADS_URL}/${photo.filename}" alt="">
                             </div>
                         `).join('')}
                         ${item.photos.length > 4 ? `<div class="home-gallery-more">+${item.photos.length - 4}</div>` : ''}
@@ -700,7 +705,7 @@ async function openAlbumDetail(id) {
             <div class="detail-gallery-photos">
                 ${album.photos.map((photo, index) => `
                     <div class="detail-gallery-photo" onclick="viewPhotoFromAlbum(${index})">
-                        <img src="http://localhost:3000/uploads/${photo.filename}" alt="">
+                        <img src="${UPLOADS_URL}/${photo.filename}" alt="">
                     </div>
                 `).join('')}
             </div>
@@ -928,7 +933,7 @@ function renderGallery() {
                     <div class="gallery-photos">
                         ${album.photos.map((photo, index) => `
                             <div class="gallery-photo" onclick="event.stopPropagation(); viewPhotoFromList('${photo.filename}', ${index}, ${album.id})">
-                                <img src="http://localhost:3000/uploads/${photo.filename}" alt="">
+                                <img src="${UPLOADS_URL}/${photo.filename}" alt="">
                             </div>
                         `).join('')}
                     </div>
@@ -963,7 +968,7 @@ function viewPhoto(filename, photoList = null) {
         currentPhotoIndex = 0;
     }
     
-    img.src = `http://localhost:3000/uploads/${filename}`;
+    img.src = `${UPLOADS_URL}/${filename}`;
     viewer.style.display = 'block';
     updatePhotoNavigation();
 }
@@ -1001,7 +1006,7 @@ function prevPhoto() {
     if (currentPhotoIndex > 0) {
         currentPhotoIndex--;
         const img = document.getElementById('viewerImage');
-        img.src = `http://localhost:3000/uploads/${currentPhotoList[currentPhotoIndex]}`;
+        img.src = `${UPLOADS_URL}/${currentPhotoList[currentPhotoIndex]}`;
         updatePhotoNavigation();
     }
 }
@@ -1011,7 +1016,7 @@ function nextPhoto() {
     if (currentPhotoIndex < currentPhotoList.length - 1) {
         currentPhotoIndex++;
         const img = document.getElementById('viewerImage');
-        img.src = `http://localhost:3000/uploads/${currentPhotoList[currentPhotoIndex]}`;
+        img.src = `${UPLOADS_URL}/${currentPhotoList[currentPhotoIndex]}`;
         updatePhotoNavigation();
     }
 }
@@ -1022,7 +1027,7 @@ function viewPhotoFromAlbum(index) {
         currentPhotoList = window.currentAlbumPhotos;
         currentPhotoIndex = index;
         const img = document.getElementById('viewerImage');
-        img.src = `http://localhost:3000/uploads/${currentPhotoList[currentPhotoIndex]}`;
+        img.src = `${UPLOADS_URL}/${currentPhotoList[currentPhotoIndex]}`;
         document.getElementById('photoViewer').style.display = 'block';
         updatePhotoNavigation();
     }
@@ -1036,7 +1041,7 @@ function viewPhotoFromList(filename, index, albumId) {
         currentPhotoList = album.photos.map(p => p.filename);
         currentPhotoIndex = index;
         const img = document.getElementById('viewerImage');
-        img.src = `http://localhost:3000/uploads/${currentPhotoList[currentPhotoIndex]}`;
+        img.src = `${UPLOADS_URL}/${currentPhotoList[currentPhotoIndex]}`;
         document.getElementById('photoViewer').style.display = 'block';
         updatePhotoNavigation();
     }
