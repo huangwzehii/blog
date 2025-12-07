@@ -1,0 +1,6 @@
+node_modules/
+.git/
+.vscode/
+*.md
+check-server.js
+server-debug.js

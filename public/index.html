@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="theme-color" content="#fff9e6">
+    <title>锁死</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-left">
+                <div class="site-title">
+                    <h1>锁死</h1>
+                    <p class="site-subtitle">锁得死死的</p>
+                </div>
+                <div class="day-counter-widget">
+                    <span class="counter-value" id="headerDayCounter">0</span>
+                </div>
+            </div>
+            <nav>
+                <button class="nav-btn active" data-page="home">首页</button>
+                <button class="nav-btn" data-page="thoughts">碎碎念</button>
+                <button class="nav-btn" data-page="articles">文章</button>
+                <button class="nav-btn" data-page="gallery">相册</button>
+                <button class="icon-btn" id="searchBtn" title="搜索">🔍</button>
+                <button class="icon-btn" id="calendarBtn" title="日历">📅</button>
+                <button class="icon-btn notification-btn" id="notificationBtn" title="通知" style="display: none;">
+                    ✉️
+                    <span class="notification-badge" id="notificationBadge"></span>
+                </button>
+                <button class="login-btn" id="loginBtn">♂♀</button>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="homePage" class="page active">
+            <div id="homeList" class="posts-list"></div>
+            <div id="homePagination" class="pagination"></div>
+        </div>
+
+        <div id="thoughtsPage" class="page">
+            <div class="page-header">
+                <button class="new-btn" id="newThoughtBtn" style="display: none;">+ 新碎碎念</button>
+            </div>
+            <div id="thoughtsList" class="posts-list"></div>
+            <div id="thoughtsPagination" class="pagination"></div>
+        </div>
+
+        <div id="articlesPage" class="page">
+            <div class="page-header">
+                <button class="new-btn" id="newArticleBtn" style="display: none;">+ 新文章</button>
+            </div>
+            <div id="articlesList" class="posts-list"></div>
+            <div id="articlesPagination" class="pagination"></div>
+        </div>
+
+        <div id="galleryPage" class="page">
+            <div class="page-header">
+                <button class="new-btn" id="newAlbumBtn" style="display: none;">+ 上传照片</button>
+            </div>
+            <div id="galleryList" class="gallery-list"></div>
+            <div id="galleryPagination" class="pagination"></div>
+        </div>
+    </main>
+
+    <!-- 搜索弹窗 -->
+    <div id="searchModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>搜索内容</h2>
+            <input type="text" id="searchInput" placeholder="输入关键词搜索...">
+            <div class="search-filters">
+                <label><input type="checkbox" id="filterThoughts" checked> 碎碎念</label>
+                <label><input type="checkbox" id="filterArticles" checked> 文章</label>
+                <label><input type="checkbox" id="filterGallery" checked> 相册</label>
+            </div>
+            <div id="searchResults" class="search-results"></div>
+        </div>
+    </div>
+
+    <!-- 通知弹窗 -->
+    <div id="notificationModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>通知</h2>
+            <div id="notificationList" class="notification-list"></div>
+        </div>
+    </div>
+
+    <!-- 日历弹窗 -->
+    <div id="calendarModal" class="modal">
+        <div class="modal-content calendar-modal">
+            <span class="close">&times;</span>
+            <div class="calendar-timer">
+                <div class="timer-label">相识天数</div>
+                <div class="timer-value" id="dayCounter">0</div>
+                <div class="timer-sublabel">从 2025年12月1日 开始</div>
+            </div>
+            <h2>内容日历</h2>
+            <div class="calendar-header">
+                <button class="calendar-nav" id="prevMonth">◀</button>
+                <span id="currentMonth"></span>
+                <button class="calendar-nav" id="nextMonth">▶</button>
+            </div>
+            <div class="calendar-legend">
+                <span class="legend-item"><span class="legend-dot male">♂</span> 男性</span>
+                <span class="legend-item"><span class="legend-dot female">♀</span> 女性</span>
+                <span class="legend-item"><span class="legend-dot both">♂♀</span> 双方</span>
+            </div>
+            <div id="calendarGrid" class="calendar-grid"></div>
+        </div>
+    </div>
+
+    <!-- 返回顶部按钮 -->
+    <button id="backToTop" class="back-to-top" title="返回顶部">
+        <span>↑</span>
+    </button>
+
+    <!-- Toast 提示 -->
+    <div id="toast" class="toast"></div>
+
+    <!-- 登录弹窗 -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>登录</h2>
+            <div class="login-options">
+                <button class="gender-btn" data-gender="male">♂</button>
+                <button class="gender-btn" data-gender="female">♀</button>
+            </div>
+            <input type="password" id="passwordInput" placeholder="请输入密钥" style="display: none;">
+            <button id="submitLogin" style="display: none;">确认</button>
+            <p id="loginError" class="error"></p>
+        </div>
+    </div>
+
+    <!-- 相册上传弹窗 -->
+    <div id="albumModal" class="modal">
+        <div class="modal-content editor-modal">
+            <span class="close">&times;</span>
+            <h2>上传照片</h2>
+            <div id="dropZone" class="drop-zone">
+                <p>拖拽照片到这里或点击选择</p>
+                <input type="file" id="photoInput" accept="image/*" multiple style="display: none;">
+            </div>
+            <div id="previewContainer" class="preview-container"></div>
+            <textarea id="albumDescription" placeholder="描述这些照片..."></textarea>
+            <button id="submitAlbum">发布</button>
+        </div>
+    </div>
+
+    <!-- 新建/编辑弹窗 -->
+    <div id="editorModal" class="modal">
+        <div class="modal-content editor-modal">
+            <span class="close">&times;</span>
+            <h2 id="editorTitle">新建</h2>
+            <input type="text" id="postTitle" placeholder="标题（文章需要）">
+            <textarea id="postContent" placeholder="内容"></textarea>
+            <button id="submitPost">发布</button>
+        </div>
+    </div>
+
+    <!-- 详情弹窗 -->
+    <div id="detailModal" class="modal">
+        <div class="modal-content detail-modal">
+            <span class="close">&times;</span>
+            <div id="postDetail"></div>
+            <div class="comments-section">
+                <h3>评论</h3>
+                <div id="commentsList"></div>
+                <div id="commentForm" style="display: none;">
+                    <textarea id="commentInput" placeholder="写下你的评论..."></textarea>
+                    <button id="submitComment">发表评论</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 照片查看器 -->
+    <div id="photoViewer" class="photo-viewer">
+        <div class="photo-viewer-content">
+            <span class="close">&times;</span>
+            <button class="photo-nav photo-prev" id="photoPrev">‹</button>
+            <button class="photo-nav photo-next" id="photoNext">›</button>
+            <img id="viewerImage" src="" alt="">
+            <div class="photo-counter" id="photoCounter"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
